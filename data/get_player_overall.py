@@ -25,7 +25,7 @@ def place_player(ind, player_id, year, arr, m, n):
         b = np_arr.reshape((m,n))
         if player_year.overall_player_dashboard.data['data'] != []:
             player_season = player_year.overall_player_dashboard.data['data'][0]
-            # season is available
+            # season is available from active player
             # games played
             b[ind, 0] = player_id
             num = np.array([5,29,22,21,24,25,23,18,12,15,17])
@@ -64,8 +64,9 @@ def get_season_data(year, debug=True):
     df = pd.DataFrame(b, columns=columns)
     to_int = ['PlayerID', 'GP', 'PTS', 'AST', 'REB', 'STL', 'BLK', 'TOV']
     df[to_int] = df[to_int].astype(int)
+    df_filtered = df[df['GP'] > 0] 
     if debug:
-        print(df)
+        print(df_filtered)
     # also export to csv
-    df.to_csv(f'{year}_nba_players.csv')
-    return df
+    df_filtered.to_csv(f'{year}_nba_players.csv')
+    return df_filtered

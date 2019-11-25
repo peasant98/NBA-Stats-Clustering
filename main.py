@@ -26,7 +26,6 @@ if __name__ == '__main__':
     # given year, get all players
     df = get_players.get_season_data(opt.season)
     # also store into csv 
-    print(df)
 
     # players.find_player_by_id(<id>)
         
