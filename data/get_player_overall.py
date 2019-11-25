@@ -69,6 +69,3 @@ def get_season_data(year, debug=True):
     # also export to csv
     df.to_csv(f'{year}_nba_players.csv')
     return df
-
-
-get_season_data('2019-20')
