@@ -26,8 +26,6 @@ if __name__ == '__main__':
     # given year, get all players
     df = get_players.get_season_data(opt.season)
     # also store into csv 
-
-    # players.find_player_by_id(<id>)
         
     # player_info = commonplayerinfo.CommonPlayerInfo(player_id=2544)
     # get the ids of the legends

@@ -19,7 +19,8 @@ def place_player(ind, player_id, year, arr, m, n):
     player_year = playerdashboardbyyearoveryear.PlayerDashboardByYearOverYear(player_id=player_id,
                                             season=year)
     with arr.get_lock():
-        print(f'{player_id} found.')
+        name = players.find_player_by_id(player_id)['full_name']
+        print(f'{name} found.')
         np_arr = np.frombuffer(arr.get_obj()) # mp_arr and arr share the same memory
         # make it two-dimensional
         b = np_arr.reshape((m,n))
