@@ -18,7 +18,7 @@ if __name__ == '__main__':
     parser.add_argument('--dim_reduce_option', type=str, default=None, help='dimension reduction method')
     parser.add_argument('--season', type=str, default='2019-20', help='season year')
     
-    parser.add_argument('-l','--list', nargs='+', help='<Required> Set flag', required=True)
+    parser.add_argument('-l','--list', nargs='+', help='<Required> Set flag')
     opt = parser.parse_args()
     # get clustering and dimension methods from cmd line
     clustering_method = opt.clustering_option
