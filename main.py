@@ -17,6 +17,8 @@ if __name__ == '__main__':
     parser.add_argument('--clustering_option', type=str, default='kmeans', help='clustering method')
     parser.add_argument('--dim_reduce_option', type=str, default=None, help='dimension reduction method')
     parser.add_argument('--season', type=str, default='2019-20', help='season year')
+    
+    parser.add_argument('-l','--list', nargs='+', help='<Required> Set flag', required=True)
     opt = parser.parse_args()
     # get clustering and dimension methods from cmd line
     clustering_method = opt.clustering_option
@@ -26,8 +28,7 @@ if __name__ == '__main__':
     # given year, get all players
     df = get_players.get_season_data(opt.season)
     # also store into csv 
+    # clustering method
         
-    # player_info = commonplayerinfo.CommonPlayerInfo(player_id=2544)
-    # get the ids of the legends
 
     
