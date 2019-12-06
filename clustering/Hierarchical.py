@@ -1,23 +1,21 @@
 # hierarchical clustering
 from sklearn.cluster import AgglomerativeClustering
-class NBAHierarchical(NBACluster):
-    pass
-
-
+from Cluster import NBACluster
 import numpy as np
-X = np.array([[1, 2], [1, 4], [1, 0],
-               [4, 2], [4, 4], [4, 0]])
-clustering = AgglomerativeClustering().fit(X)
-print(clustering)
-# def __init__(self, type_clustering, dim_reduce=False):
-#         pass
 
-#     def init_data(self, data):
-#         pass
+class NBAHierarchical(NBACluster):
+    def fit(self, dist_metric, linkage='ward'):
+        if linkage == 'ward':
+            print('Ward linkage selected. Euclidean metric selected.')
+            dist_metric = 'euclidean'
+        self.engine = AgglomerativeClustering(n_clusters=self.num_clusters, affinity=dist_metric,
+                                                linkage=linkage)
+        # fit the data
+        cluster = self.engine.fit(self.x)
+        self.labels = cluster.labels_
+        self.children = cluster.children_
 
-#     def fit(self, eps):
-#         # fit the data
-#         pass
-#     def fit(self, test_data):
-#         # test the data
-#         pass
+nba = NBAHierarchical(4)
+nba.init_data_from_df('2019-20', ['PTS', 'AST'])
+nba.fit('euclidean')
+nba.plot()

@@ -69,5 +69,5 @@ def get_season_data(year, debug=True):
     if debug:
         print(df_filtered)
     # also export to csv
-    df_filtered.to_csv(f'{year}_nba_players.csv')
+    df_filtered.to_csv(f'data/{year}_nba_players.csv')
     return df_filtered
