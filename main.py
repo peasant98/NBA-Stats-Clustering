@@ -21,13 +21,12 @@ if __name__ == '__main__':
     parser.add_argument('--val_list', nargs='+', help='<Required> Set flag')
     opt = parser.parse_args()
     # get clustering and dimension methods from cmd line
-    print(opt.val_list)
     clustering_method = opt.clustering_option
     dim_reduce_method = opt.dim_reduce_option
     # for working with active players:
-    # all_players = players.get_active_players()
+    all_players = players.get_active_players()
     # # given year, get all players
-    # df = get_players.get_season_data(opt.season)
+    df = get_players.get_season_data(opt.season)
     # # also store into csv 
     # clustering method
         

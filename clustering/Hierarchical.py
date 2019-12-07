@@ -15,7 +15,7 @@ class NBAHierarchical(NBACluster):
         self.labels = cluster.labels_
         self.children = cluster.children_
 
-nba = NBAHierarchical(4)
-nba.init_data_from_df('2019-20', ['PTS', 'AST'])
+nba = NBAHierarchical(5)
+nba.init_data_from_df('2019-20', ['STL', 'BLK', 'REB'], normalize=True)
 nba.fit('euclidean')
-nba.plot()
+nba.plot(True)

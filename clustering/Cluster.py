@@ -32,7 +32,7 @@ class NBACluster():
     def get_labels(self):
         # return labels from engine.
         return self.labels
-    def plot(self):
+    def plot(self, disp_names=False):
         self.color_labels = [f'Group {i+1}' for i in range(self.num_clusters)]
         groups = [[] for i in range(self.num_clusters)]
         group_labels = [[] for i in range(self.num_clusters)]
@@ -51,10 +51,11 @@ class NBACluster():
             # plt.xlabel('f')
             ax.set_xlabel(self.ordered_dims[0])
             ax.set_ylabel(self.ordered_dims[1])
-            for i,p in enumerate(self.x):
-                pass
-                # name = players.find_player_by_id(self.names[i])['full_name']
-                # ax.text(p[0],p[1], name)
+            if disp_names:
+                for i,p in enumerate(self.x):
+                    if p[0] > 0.6 or p[1] > 0.6:
+                        name = players.find_player_by_id(self.names[i])['full_name']
+                        ax.text(p[0],p[1], name)
         elif len(self.dim_vals) == 3:
             fig = plt.figure()
             ax = Axes3D(fig)
@@ -62,6 +63,11 @@ class NBACluster():
             ax.set_xlabel(self.ordered_dims[0])
             ax.set_ylabel(self.ordered_dims[1])
             ax.set_zlabel(self.ordered_dims[2])
+            if disp_names:
+                for i,p in enumerate(self.x):
+                    if p[0] > 0.6 or p[1] > 0.6 or p[2] > 0.6:
+                        name = players.find_player_by_id(self.names[i])['full_name']
+                        ax.text(p[0],p[1], p[2], name)
         plt.show()
         # works for 1,2, and 3d data
         

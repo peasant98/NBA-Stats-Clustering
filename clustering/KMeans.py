@@ -4,10 +4,10 @@ import numpy as np
 
 # k-means clustering on n-dimensional data
 class NBAKMeans(NBACluster):
-    def fit(self, initialization, n_init_diff_seeds, max_iter, tolerance):
+    def fit(self, initialization, max_iter, tolerance):
 
         self.engine = KMeans(n_clusters=self.num_clusters, init=initialization,
-                                n_init=n_init_diff_seeds, max_iter=max_iter, tol=tolerance)        
+                                max_iter=max_iter, tol=tolerance)        
         # fit the data
         cluster = self.engine.fit(self.x)
         self.labels = cluster.labels_
@@ -126,12 +126,13 @@ class NBAKMeansSimple(NBACluster):
 # z1 includes X, dataset
 
 
-# nba = NBAKMeansSimple(4)
+# nba = NBAKMeansSimple(5)
+# take care of division by 0 error
 nba = NBAKMeans(5)
 # nba.init_data_from_df('2019-20', ['PTS', 'AST', 'REB', 'STL', 'BLK'])
-nba.init_data_from_df('2019-20', ['PTS', 'AST', 'REB'])
+nba.init_data_from_df('2019-20', ['PTS', 'AST', 'REB'], normalize=True)
 # nba.fit(False, 0.0001)
-nba.fit('k-means++', 10, 300, 0.0001)
+nba.fit('k-means++', 300, 0.0001)
 
 # print(nba.get_labels())
 

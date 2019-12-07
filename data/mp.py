@@ -4,7 +4,6 @@ import numpy as np
 x = [1]
 def f(a, lock):
     lock.acquire()
-    print(lock)
     for i in range(len(a)):
         a[i] = -a[i]
     lock.release()
