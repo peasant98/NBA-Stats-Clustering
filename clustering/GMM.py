@@ -3,7 +3,8 @@ import numpy as np
 import stats
 
 class NBAGMM(NBACluster):
-     pass
+     def fit():
+         pass
     # gmm, done from scratch
 
 
