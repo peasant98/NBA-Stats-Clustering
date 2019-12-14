@@ -6,95 +6,60 @@ from Cluster import NBACluster
 class NBAGMM(NBACluster):
     def fit(self):
         pass
+    
     def get_points(self, k):
         a = self.df.values
         indices = np.random.choice(list(range(len(a))), k, replace=False)
         k_points = a[indices]
+        print(np.cov(a.T).shape)
 
     def em_algorithm(self, k, m, a):
-        pass
         # pick k random points
-        # means = np.zeros(a.shape)
-        # mu = np.zeros(k)
-        # cov = np.zeros(k)
-        # probs = np.zeros(k)
-        # probs.fill(1./k)
-        # p_given_class = np.zeros(k)
-        # p_given_data = np.zeros(k)
-        # n_class = np.zeros(k)
-        # for ind,val in enumerate(mu):
-        #     mu[ind] = m[ind]
-        # for ind,val in enumerate(cov):
-        #     if ind == 0:
-        #         cov[0] = np.cov(a.T)
-        #     else:
-        #         cov[ind] = cov[0]
-        # for _ in range(100):
-        #     summation = 0
-        #     for i in range(k):
-        #         p_given_class[i] = stats.multivariate_normal.pdf(a, mean=mu[i], cov=cov[i])
-        #         p_given_data[i] = p_given_data[i] * probs[i]
-        #         summation += p_given_data[i]
-        #     length = len(a)
-        #     for i in range(k):
-        #         p_given_data[i]/=summation
-        #         n_class[i] = np.sum(p_given_data[i])
-        #         probs[i] = n_class[i]/length
-        #     for i in range(k):
-
-
-            
-        #     x_bar = (1/n_class1) * np.sum(p_class1_given_data*a[:,0])
-        #     y_bar = (1/n_class1) * np.sum(p_class1_given_data*a[:,1])
-        #     mu1 = np.array([x_bar, y_bar])
-            
-        #     x_bar = (1/n_class2) * np.sum(p_class2_given_data*a[:,0])
-        #     y_bar = (1/n_class2) * np.sum(p_class2_given_data*a[:,1])
-        #     mu2 = np.array([x_bar, y_bar])
-            
-        #     x_bar = (1/n_class3) * np.sum(p_class3_given_data*a[:,0])
-        #     y_bar = (1/n_class3) * np.sum(p_class3_given_data*a[:,1])
-        #     mu3 = np.array([x_bar, y_bar])
-            
-        #     # get covariances
-        #     covs = []
-        #     for p in a:
-        #         x_i = p
-        #         r = x_i - mu1
-        #         vec = np.expand_dims(r, axis=0)
-        #         cov_i = vec * vec.T
-        #         covs.append(cov_i)
-        #     covs = np.array(covs)
-            
-        #     p_class_1_data = np.expand_dims(p_class1_given_data, axis=1)
-        #     p_class_1_data = np.expand_dims(p_class_1_data, axis=1)
-        #     cov1 = np.sum(p_class_1_data * covs, axis=0) / n_class1
-            
-        #     covs = []
-        #     for p in a:
-        #         x_i = p
-        #         r = x_i - mu2
-        #         vec = np.expand_dims(r, axis=0)
-        #         cov_i = vec * vec.T
-        #         covs.append(cov_i)
-        #     covs = np.array(covs)
-            
-        #     p_class_2_data = np.expand_dims(p_class2_given_data, axis=1)
-        #     p_class_2_data = np.expand_dims(p_class_2_data, axis=1)
-        #     cov2 = np.sum(p_class_2_data * covs, axis=0) / n_class2
-            
-        #     covs = []
-        #     for p in a:
-        #         x_i = p
-        #         r = x_i - mu3
-        #         vec = np.expand_dims(r, axis=0)
-        #         cov_i = vec * vec.T
-        #         covs.append(cov_i)
-        #     covs = np.array(covs)
-            
-        #     p_class_3_data = np.expand_dims(p_class3_given_data, axis=1)
-        #     p_class_3_data = np.expand_dims(p_class_3_data, axis=1)
-        #     cov3 = np.sum(p_class_3_data * covs, axis=0) / n_class3
+        mu = np.zeros((k, a.shape[-1]))
+        covariances = np.zeros((k, a.shape[-1], a.shape[-1]))
+        probs = np.zeros(k)
+        probs.fill(1./k)
+        p_given_class = np.zeros((k, len(a)))
+        p_given_data = np.zeros(k)
+        p_class_data = np.zeros(k)
+        n_class = np.zeros(k)
+        for ind,val in enumerate(mu):
+            mu[ind] = m[ind]
+        for ind,val in enumerate(covariances):
+            if ind == 0:
+                covariances[0] = np.cov(a.T)
+            else:
+                covariances[ind] = covariances[0]
+        for _ in range(100):
+            summation = 0
+            for i in range(k):
+                p_given_class[i] = stats.multivariate_normal.pdf(a, mean=mu[i], cov=cov[i])
+                p_given_data[i] = p_given_data[i] * probs[i]
+                summation += p_given_data[i]
+            length = len(a)
+            for i in range(k):
+                p_given_data[i]/=summation
+                n_class[i] = np.sum(p_given_data[i])
+                probs[i] = n_class[i]/length
+            for i in range(k):
+                means = np.zeros(a.shape[-1])
+                for j in range(len(means)):
+                    means[j] = (1/n_class[i]) * np.sum(p_given_data[i]*a[:,j])
+                mu[i] = np.array(means)
+            covs = []
+            for i in range(k):
+                for p in a:
+                    x_i = p
+                    r = x_i - mu[i]
+                    vec = np.expand_dims(r, axis=0)
+                    cov_i = vec * vec.T
+                    covs.append(cov_i)
+                covs = np.array(covs)
+                p_class_data[i] = np.expand_dims(p_given_data[i], axis=1)
+                p_class_data[i] = np.expand_dims(p_class_data[i], axis=1)
+                covariances[i] = np.sum(p_class_data[i] * covs, axis=0) / n_class[i]
+         
+           
 # def EM3(dk, m1, m2, m3, a):
 #     mu1 = m1
 #     mu2 = m2
@@ -201,7 +166,7 @@ class NBAGMM(NBACluster):
 nba = NBAGMM(5)
 # nba.init_data_from_df('2019-20', ['PTS', 'AST', 'REB', 'STL', 'BLK'])
 nba.init_data_from_df('2019-20', ['PTS', 'AST', 'REB'], normalize=True)
-nba.em_algorithm(2)
+nba.get_points(10)
 # nba.fit(False, 0.0001)
 # nba.fit('k-means++', 300, 0.0001)
 
