@@ -18,10 +18,11 @@ class NBAGMM(NBACluster):
         mu = np.zeros((k, a.shape[-1]))
         covariances = np.zeros((k, a.shape[-1], a.shape[-1]))
         probs = np.zeros(k)
+        # also p_class_n
         probs.fill(1./k)
         p_given_class = np.zeros((k, len(a)))
-        p_given_data = np.zeros(k)
-        p_class_data = np.zeros(k)
+        p_given_data = np.zeros((k, len(a)))
+        p_class_data = np.zeros((k, len(a), 1, 1))
         n_class = np.zeros(k)
         for ind,val in enumerate(mu):
             mu[ind] = m[ind]
@@ -31,9 +32,9 @@ class NBAGMM(NBACluster):
             else:
                 covariances[ind] = covariances[0]
         for _ in range(100):
-            summation = 0
+            summation = np.zeros((len(a)))
             for i in range(k):
-                p_given_class[i] = stats.multivariate_normal.pdf(a, mean=mu[i], cov=cov[i])
+                p_given_class[i] = stats.multivariate_normal.pdf(a, mean=mu[i], cov=covariances[i])
                 p_given_data[i] = p_given_data[i] * probs[i]
                 summation += p_given_data[i]
             length = len(a)
@@ -55,11 +56,11 @@ class NBAGMM(NBACluster):
                     cov_i = vec * vec.T
                     covs.append(cov_i)
                 covs = np.array(covs)
-                p_class_data[i] = np.expand_dims(p_given_data[i], axis=1)
-                p_class_data[i] = np.expand_dims(p_class_data[i], axis=1)
+                temp = np.expand_dims(p_given_data[i], axis=1)
+                p_class_data[i] = np.expand_dims(temp, axis=1)
                 covariances[i] = np.sum(p_class_data[i] * covs, axis=0) / n_class[i]
          
-           
+        return mu, covariances, p_given_data, probs
 # def EM3(dk, m1, m2, m3, a):
 #     mu1 = m1
 #     mu2 = m2
