@@ -130,7 +130,8 @@ class NBAKMeansSimple(NBACluster):
 # take care of division by 0 error
 nba = NBAKMeans(5)
 # nba.init_data_from_df('2019-20', ['PTS', 'AST', 'REB', 'STL', 'BLK'])
-nba.init_data_from_df('2019-20', ['PTS', 'AST', 'REB'], normalize=True)
+nba.init_data_from_df('2019-20', ['FT_PCT', 'FG3_PCT', 'FG_PCT'], normalize=True)
+
 # nba.fit(False, 0.0001)
 nba.fit('k-means++', 300, 0.0001)
 

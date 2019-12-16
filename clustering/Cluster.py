@@ -32,7 +32,7 @@ class NBACluster():
     def get_labels(self):
         # return labels from engine.
         return self.labels
-    def plot(self, disp_names=False):
+    def plot(self, disp_names=False, thresh=0.7):
         self.color_labels = [f'Group {i+1}' for i in range(self.num_clusters)]
         groups = [[] for i in range(self.num_clusters)]
         group_labels = [[] for i in range(self.num_clusters)]
@@ -53,7 +53,7 @@ class NBACluster():
             ax.set_ylabel(self.ordered_dims[1])
             if disp_names:
                 for i,p in enumerate(self.x):
-                    if p[0] > 0.6 or p[1] > 0.6:
+                    if p[0] > thresh or p[1] > thresh:
                         name = players.find_player_by_id(self.names[i])['full_name']
                         ax.text(p[0],p[1], name)
         elif len(self.dim_vals) == 3:
@@ -65,7 +65,7 @@ class NBACluster():
             ax.set_zlabel(self.ordered_dims[2])
             if disp_names:
                 for i,p in enumerate(self.x):
-                    if p[0] > 0.6 or p[1] > 0.6 or p[2] > 0.6:
+                    if p[0] > thresh or p[1] > thresh or p[2] > thresh:
                         name = players.find_player_by_id(self.names[i])['full_name']
                         ax.text(p[0],p[1], p[2], name)
         plt.show()
