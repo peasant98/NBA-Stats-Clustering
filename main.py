@@ -51,10 +51,10 @@ if __name__ == '__main__':
     # here are the clustering methods
     # if the user decides to do less than 3 clusters for whatever reason
     num_clusters = max(opt.num_clusters,3)
-    year = '2018-19'
-    cols = ['PTS', 'MIN', 'PLUS_MINUS']
+    year = '2019-20'
+    cols = ['PTS', 'AST', 'REB']
     normalize = True
-    plot_names = True
+    plot_names = False
     km_elbows = []
     km_simple_random_elbows = []
     km_simple_extreme_elbows = []
@@ -69,8 +69,9 @@ if __name__ == '__main__':
 
         nba.fit('k-means++', 300, 0.0001)
         km_elbows.append(nba.ssd)
-        nba.plot(plot_names)
-        
+        nba.text_display_cluster()
+
+        nba.plot(single_name='LeBron James', disp_names=plot_names)
         # ## k means simple
         
         nba1 = nba_kmeans.NBAKMeansSimple(k)
@@ -79,7 +80,7 @@ if __name__ == '__main__':
         # true for random initialization.
         nba1.fit(True, 0.0001)
         km_simple_random_elbows.append(nba1.ssd)
-        nba1.plot(plot_names)
+        nba1.plot(single_name='LeBron James', disp_names=plot_names)
 
         nba2 = nba_kmeans.NBAKMeansSimple(k)
         nba2.init_data_from_df(year, cols, normalize=normalize)
@@ -89,7 +90,7 @@ if __name__ == '__main__':
         km_simple_extreme_elbows.append(nba2.ssd)
 
 
-        nba2.plot(plot_names)
+        nba2.plot(single_name='LeBron James', disp_names=plot_names)
         
         # # ## gaussian mixture model
 
@@ -101,7 +102,7 @@ if __name__ == '__main__':
         nba3.fit()
         gmm_elbows.append(nba3.ssd)
         # # # print(nba.get_labels())
-        nba3.plot(plot_names)
+        nba3.plot(single_name='LeBron James', disp_names=plot_names)
         
 
         # ## hierarchical
@@ -110,7 +111,7 @@ if __name__ == '__main__':
         nba4.init_data_from_df(year, cols, normalize=normalize)
         nba4.fit('euclidean')
         hierarchical_elbows.append(nba4.ssd)
-        nba4.plot(plot_names)
+        nba4.plot(single_name='LeBron James', disp_names=plot_names)
     all_elbows = [km_elbows, km_simple_random_elbows, km_simple_extreme_elbows, gmm_elbows, hierarchical_elbows]
     elbow_strings = ['KM', 'KM-Simple-Random', 'KM-Simple-Extreme', 'GMM', 'Hierarchical']
     for i in range(len(all_elbows)):

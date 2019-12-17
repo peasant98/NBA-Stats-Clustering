@@ -19,6 +19,7 @@ class NBAGMM(NBACluster):
             l.append(selection)
         self.ssd = dist
         self.labels = l
+        self.centroids = res[0]
 
     def get_points(self, k):
         a = self.df.values

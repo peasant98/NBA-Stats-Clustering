@@ -26,7 +26,7 @@ class NBAHierarchical(NBACluster):
         for v in range(len(self.x)):
             dist += self.dist(self.x[v], centroids[labels_np[v]])
         self.ssd = dist
-
+        self.centroids = np.array(centroids)
         self.children = cluster.children_
     
     def dist(self, x1, x2):

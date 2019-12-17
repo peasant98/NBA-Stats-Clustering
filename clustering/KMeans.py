@@ -11,7 +11,7 @@ class NBAKMeans(NBACluster):
         # fit the data
         cluster = self.engine.fit(self.x)
         self.labels = cluster.labels_
-        self.cluster_centers_ = cluster.cluster_centers_
+        self.centroids = cluster.cluster_centers_
         print(f'KMeans ran for {cluster.n_iter_} iterations with ssd {cluster.inertia_}')
         self.ssd = cluster.inertia_
 

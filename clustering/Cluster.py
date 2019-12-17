@@ -42,13 +42,17 @@ class NBACluster():
         # return labels from engine.
         return self.labels
     def text_display_cluster(self):
+        '''
+        displays all of the groups that every player is in after `fit()` is run, as well
+        their corresponding centroid.
+        '''
         for i,p in enumerate(self.x):
             name_obj = players.find_player_by_id(self.names[i])
             if name_obj != None:
                 name = name_obj['full_name']
-                print(f'{name}: Group {self.labels[i]}')
+                print(f'{name}: Group {self.labels[i]} with centroid {self.centroids[self.labels[i]]}')
 
-    def plot(self, disp_names=False, thresh=0.8, single_name=''):
+    def plot(self, disp_names=False, thresh=0.8, single_name='', interactive=False):
         '''
         plots the cluster points.
 
@@ -56,11 +60,20 @@ class NBACluster():
 
         `thresh`: `float`, between `0` and `1`: given each dimensions max value, take `thresh * 100%` of that to show names.
 
+        `single_name`: `str`: If the user wants to see where a specific player is classified, they can do so here.
+
+        `interactive`: `bool`: If the user wants to be able to interact with the plot after each clustering `fit` is run.
+        
         '''
+        self.priority_name_index = -1
         player = players.find_players_by_full_name(single_name)
         if len(player) == 1:
             # there is a valid player with the name
             self.p_id = player[0]['id']
+            index = np.where(np.array(self.names)==self.p_id)
+            if len(index) == 1:
+                # player does in fact exist
+                self.priority_name_index = index[0][0]
 
         self.color_labels = [f'Group {i+1}' for i in range(self.num_clusters)]
         groups = [[] for i in range(self.num_clusters)]
@@ -90,6 +103,12 @@ class NBACluster():
                         if name_obj != None:
                             name = name_obj['full_name']
                             ax.text(p[0],p[1], name)
+            for i,p in enumerate(self.x):
+                if i==self.priority_name_index:
+                    name_obj = players.find_player_by_id(self.names[i])
+                    if name_obj != None:
+                        name = name_obj['full_name']
+                        ax.text(p[0],p[1], name)
         elif len(self.dim_vals) == 3:
             fig = plt.figure()
             ax = Axes3D(fig)
@@ -100,6 +119,7 @@ class NBACluster():
             dim1_thresh = np.max(self.x[::,0]) * thresh
             dim2_thresh = np.max(self.x[::,1]) * thresh
             dim3_thresh = np.max(self.x[::,2]) * thresh
+
             if disp_names:
                 for i,p in enumerate(self.x):
                     if p[0] > dim1_thresh or p[1] > dim2_thresh or p[2] > dim3_thresh:
@@ -107,10 +127,18 @@ class NBACluster():
                         if name_obj != None:
                             name = name_obj['full_name']
                             ax.text(p[0],p[1],p[2], name)
+
+            for i,p in enumerate(self.x):
+                if i==self.priority_name_index:
+                    name_obj = players.find_player_by_id(self.names[i])
+                    if name_obj != None:
+                        name = name_obj['full_name']
+                        ax.text(p[0],p[1],p[2], name)
         is_dr = '' if not self.reduced else '-with-PCA'
         rounded_ssd = np.round(self.ssd, 4)
         title = f'{self.method}-k={self.num_clusters}-{self.cols}-{self.year}{is_dr}'
         plt.title(f'{title}-ssd={rounded_ssd}')
         plt.savefig(f'img/{title}')
+        if interactive:
+            plt.show()
         plt.close()
-        # plt.show()
