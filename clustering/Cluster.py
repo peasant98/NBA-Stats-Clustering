@@ -2,6 +2,7 @@
 import numpy as np
 # reads the csv into dataframe before clustering
 import CreateClusterData
+import DimReduce
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -10,17 +11,19 @@ from mpl_toolkits.mplot3d import Axes3D
 from nba_api.stats.static import players
 
 class NBACluster():
-    def __init__(self, num_clusters, dim_reduce=False):
+    def __init__(self, num_clusters):
         self.num_clusters = num_clusters
         # reduce dimensions if was requested
-        if dim_reduce:
-            pass
 
-    def init_data_from_df(self, year, dim_vals, normalize=False):
+    def init_data_from_df(self, year, dim_vals, normalize=False, dim_reduce=False, dim_num=3):
         # normalize is set to false, but you should do it 
         self.dim_vals = dim_vals
         self.names, self.x, self.df, self.ordered_dims = CreateClusterData.create_cluster_data(year, dim_vals, normalize)
         # initializes the data from the dataframe
+        print(self.dim_vals)
+        if dim_reduce:
+            self.x, self.df, self.ordered_dims = DimReduce.pca(self.x, dim_num)
+            self.dim_vals = self.ordered_dims
         print(f'{self.names.shape[0]} unique points, each with dimension {self.x.shape[-1]}')
 
     def fit(self, eps):
@@ -54,8 +57,10 @@ class NBACluster():
             if disp_names:
                 for i,p in enumerate(self.x):
                     if p[0] > thresh or p[1] > thresh:
-                        name = players.find_player_by_id(self.names[i])['full_name']
-                        ax.text(p[0],p[1], name)
+                        name_obj = players.find_player_by_id(self.names[i])
+                        if name_obj != None:
+                            name = name_obj['full_name']
+                            ax.text(p[0],p[1], name)
         elif len(self.dim_vals) == 3:
             fig = plt.figure()
             ax = Axes3D(fig)
@@ -66,8 +71,10 @@ class NBACluster():
             if disp_names:
                 for i,p in enumerate(self.x):
                     if p[0] > thresh or p[1] > thresh or p[2] > thresh:
-                        name = players.find_player_by_id(self.names[i])['full_name']
-                        ax.text(p[0],p[1], p[2], name)
+                        name_obj = players.find_player_by_id(self.names[i])
+                        if name_obj != None:
+                            name = name_obj['full_name']
+                            ax.text(p[0],p[1],p[2], name)
         plt.show()
         # works for 1,2, and 3d data
         
