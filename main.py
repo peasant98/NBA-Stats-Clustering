@@ -26,51 +26,64 @@ if __name__ == '__main__':
         df = get_players.by_season(opt.season)
         # simply perform clustering
     # here are the clustering methods
-
+    k = 5
+    year = '2019-20'
+    cols = ['PTS', 'AST', 'REB']
+    normalize = True
     ## k means
 
-    '''
-    nba = nba_kmeans.NBAKMeans(5)
-    nba.init_data_from_df('2019-20', ['PTS', 'AST', 'REB'], normalize=True)
+    
+    nba = nba_kmeans.NBAKMeans(k)
+    nba.init_data_from_df(year, cols, normalize=normalize)
 
     nba.fit('k-means++', 300, 0.0001)
 
     nba.plot(True)
-    '''
+    
     
 
     ## k means simple
     
-    nba = nba_kmeans.NBAKMeansSimple(5)
-    nba.init_data_from_df('2019-20', ['PTS', 'AST', 'BLK', 'REB'], normalize=True)
+    nba1 = nba_kmeans.NBAKMeansSimple(k)
+    nba1.init_data_from_df(year, cols, normalize=normalize)
 
-    nba.fit(True, 0.0001)
+    # true for random initialization.
+    nba1.fit(True, 0.0001)
 
-    nba.plot(True)
+    nba1.plot(True)
+
+    nba2 = nba_kmeans.NBAKMeansSimple(k)
+    nba2.init_data_from_df(year, cols, normalize=normalize)
+
+    # true for random initialization.
+    nba2.fit(False, 0.0001)
+
+    nba2.plot(True)
     
     
 
     ## gaussian mixture model
 
-    '''
-    nba = nba_gmm.NBAGMM(5)
-    nba.init_data_from_df('2019-20', ['PTS', 'AST', 'BLK', 'STL'], normalize=True)
+    
+    nba3 = nba_gmm.NBAGMM(k)
+    nba3.init_data_from_df(year, cols, normalize=normalize)
 
-    nba.fit()
+
+    nba3.fit()
 
     # print(nba.get_labels())
 
 
-    nba.plot(disp_names=True)
-    '''
+    nba3.plot(disp_names=True)
+    
 
     ## hierarchical
-    '''
-    nba = nba_hierarchical.NBAHierarchical(5)
-    nba.init_data_from_df('2019-20', ['PTS', 'AST', 'BLK', 'STL'], normalize=True)
-    nba.fit('euclidean')
-    nba.plot(True)
-    '''
+    
+    nba4 = nba_hierarchical.NBAHierarchical(k)
+    nba4.init_data_from_df(year, cols, normalize=normalize)
+    nba4.fit('euclidean')
+    nba4.plot(True)
+    
 
         
 

@@ -19,4 +19,5 @@ def pca(m, dims):
     
     df = pd.DataFrame(me2, columns=columns)
     res = df[columns].values
+    print(res)
     return res, df, columns

@@ -18,7 +18,7 @@ class NBAKMeans(NBACluster):
 class NBAKMeansSimple(NBACluster):
 
     def fit(self, rand_initialization, tolerance):
-        self.method = 'KMeans-simple'
+        self.method = 'KMeans-simple-random' if rand_initialization else 'KMeans-simple-extreme'
         cluster = self.k_means(self.num_clusters, self.df, tolerance, 
                     random=rand_initialization, cols=np.array(self.df.columns.values))
         # print(cluster) 

@@ -95,8 +95,8 @@ class NBACluster():
                         if name_obj != None:
                             name = name_obj['full_name']
                             ax.text(p[0],p[1],p[2], name)
-        is_dr = '' if not self.reduced else 'with PCA'
-        title = f'{self.method} method with {self.num_clusters} clusters for {self.cols} for {self.year} season {is_dr}'
+        is_dr = '' if not self.reduced else '-with-PCA'
+        title = f'{self.method}-k={self.num_clusters}-for-{self.cols}-{self.year}{is_dr}'
         plt.title(title)
         plt.savefig(title)
-        plt.show()
+        # plt.show()
