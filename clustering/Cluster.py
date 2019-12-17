@@ -41,7 +41,14 @@ class NBACluster():
         '''
         # return labels from engine.
         return self.labels
-    def plot(self, disp_names=False, thresh=0.8):
+    def text_display_cluster(self):
+        for i,p in enumerate(self.x):
+            name_obj = players.find_player_by_id(self.names[i])
+            if name_obj != None:
+                name = name_obj['full_name']
+                print(f'{name}: Group {self.labels[i]}')
+
+    def plot(self, disp_names=False, thresh=0.8, single_name=''):
         '''
         plots the cluster points.
 
@@ -50,6 +57,11 @@ class NBACluster():
         `thresh`: `float`, between `0` and `1`: given each dimensions max value, take `thresh * 100%` of that to show names.
 
         '''
+        player = players.find_players_by_full_name(single_name)
+        if len(player) == 1:
+            # there is a valid player with the name
+            self.p_id = player[0]['id']
+
         self.color_labels = [f'Group {i+1}' for i in range(self.num_clusters)]
         groups = [[] for i in range(self.num_clusters)]
         group_labels = [[] for i in range(self.num_clusters)]
@@ -96,7 +108,9 @@ class NBACluster():
                             name = name_obj['full_name']
                             ax.text(p[0],p[1],p[2], name)
         is_dr = '' if not self.reduced else '-with-PCA'
+        rounded_ssd = np.round(self.ssd, 4)
         title = f'{self.method}-k={self.num_clusters}-{self.cols}-{self.year}{is_dr}'
-        plt.title(f'{title}-ssd={self.ssd}')
+        plt.title(f'{title}-ssd={rounded_ssd}')
         plt.savefig(f'img/{title}')
+        plt.close()
         # plt.show()
