@@ -26,7 +26,8 @@ if __name__ == '__main__':
     # for working with active players:
     all_players = players.get_active_players()
     # # given year, get all players
-    df = get_players.get_season_data(opt.season)
+    # df = get_players.get_season_data(opt.season)
+    res = get_players.by_season(opt.season)
     # # also store into csv 
     # clustering method
         
