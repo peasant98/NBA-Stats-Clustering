@@ -23,9 +23,6 @@ if __name__ == '__main__':
     # get clustering and dimension methods from cmd line
     clustering_method = opt.clustering_option
     dim_reduce_method = opt.dim_reduce_option
-    # for working with active players:
-    # # given year, get all players
-    # df = get_players.get_season_data(opt.season)
     df = get_players.by_season(opt.season)
     # # also store into csv 
     # clustering method

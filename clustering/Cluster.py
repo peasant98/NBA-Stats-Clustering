@@ -32,7 +32,7 @@ class NBACluster():
     def get_labels(self):
         # return labels from engine.
         return self.labels
-    def plot(self, disp_names=False, thresh=0.7):
+    def plot(self, disp_names=False, thresh=0.8):
         self.color_labels = [f'Group {i+1}' for i in range(self.num_clusters)]
         groups = [[] for i in range(self.num_clusters)]
         group_labels = [[] for i in range(self.num_clusters)]

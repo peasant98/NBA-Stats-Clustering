@@ -19,7 +19,7 @@ def by_season(year,debug=False, games_thresh=0):
                                                     season=year)
     data = p.league_dash_player_stats.data['data']
     columns = np.array(['PlayerID', 'GP','PTS','AST','REB','STL','BLK','TOV',
-                'FT_PCT', 'FG_PCT', 'FG3_PCT', 'FTA', 'FGA', 'FG3M', 'MIN', 'PLUS_MINUS'])
+                'FT_PCT', 'FG_PCT', 'FG3_PCT', 'FTA', 'FGA', 'FG3A', 'MIN', 'PLUS_MINUS'])
     r = len(data)
     c = len(columns)
     players_arr = np.zeros((r,c))

@@ -67,11 +67,11 @@ class NBAGMM(NBACluster):
                 p_class_data[i] = np.expand_dims(temp, axis=1)
                 covariances[i] = np.sum(p_class_data[i] * covs, axis=0) / n_class[i]
         return mu, covariances, p_given_data, probs
-nba = NBAGMM(5)
-nba.init_data_from_df('2019-20', ['REB', 'AST', 'PTS'], normalize=True)
+nba = NBAGMM(4)
+nba.init_data_from_df('2019-20', ['REB', 'PTS', 'TOV'], normalize=True)
 nba.fit()
 
 # print(nba.get_labels())
 
 
-nba.plot()
+nba.plot(True)
