@@ -20,7 +20,8 @@ class NBACluster():
         self.dim_vals = dim_vals
         self.names, self.x, self.df, self.ordered_dims = CreateClusterData.create_cluster_data(year, dim_vals, normalize)
         # initializes the data from the dataframe
-        print(self.dim_vals)
+
+        # pca dimension reduction
         if dim_reduce:
             self.x, self.df, self.ordered_dims = DimReduce.pca(self.x, dim_num)
             self.dim_vals = self.ordered_dims
@@ -54,9 +55,12 @@ class NBACluster():
             # plt.xlabel('f')
             ax.set_xlabel(self.ordered_dims[0])
             ax.set_ylabel(self.ordered_dims[1])
+            dim1_thresh = np.max(self.x[::,0]) * thresh
+            dim2_thresh = np.max(self.x[::,1]) * thresh
+
             if disp_names:
                 for i,p in enumerate(self.x):
-                    if p[0] > thresh or p[1] > thresh:
+                    if p[0] > dim1_thresh or p[1] > dim2_thresh:
                         name_obj = players.find_player_by_id(self.names[i])
                         if name_obj != None:
                             name = name_obj['full_name']
@@ -68,9 +72,12 @@ class NBACluster():
             ax.set_xlabel(self.ordered_dims[0])
             ax.set_ylabel(self.ordered_dims[1])
             ax.set_zlabel(self.ordered_dims[2])
+            dim1_thresh = np.max(self.x[::,0]) * thresh
+            dim2_thresh = np.max(self.x[::,1]) * thresh
+            dim3_thresh = np.max(self.x[::,2]) * thresh
             if disp_names:
                 for i,p in enumerate(self.x):
-                    if p[0] > thresh or p[1] > thresh or p[2] > thresh:
+                    if p[0] > dim1_thresh or p[1] > dim2_thresh or p[2] > dim3_thresh:
                         name_obj = players.find_player_by_id(self.names[i])
                         if name_obj != None:
                             name = name_obj['full_name']

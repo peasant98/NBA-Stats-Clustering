@@ -18,7 +18,5 @@ def pca(m, dims):
     columns = [f'x{i}' for i in range(me2.shape[-1])]
     
     df = pd.DataFrame(me2, columns=columns)
-
-    # df = df[columns].apply(lambda x: (x - x.min()) / (x.max() - x.min()))
     res = df[columns].values
     return res, df, columns
