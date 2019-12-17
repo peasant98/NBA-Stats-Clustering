@@ -29,24 +29,25 @@ if __name__ == '__main__':
 
     ## k means
 
-    
+    '''
     nba = nba_kmeans.NBAKMeans(5)
     nba.init_data_from_df('2019-20', ['PTS', 'AST', 'REB'], normalize=True)
 
     nba.fit('k-means++', 300, 0.0001)
 
     nba.plot(True)
+    '''
     
 
     ## k means simple
-    '''
+    
     nba = nba_kmeans.NBAKMeansSimple(5)
-    nba.init_data_from_df('2019-20', ['PTS', 'AST', 'BLK', 'STL'], normalize=True)
+    nba.init_data_from_df('2019-20', ['PTS', 'AST', 'BLK', 'REB'], normalize=True)
 
-    nba.fit(False, 0.0001)
+    nba.fit(True, 0.0001)
 
-    nba.plot()
-    '''
+    nba.plot(True)
+    
     
 
     ## gaussian mixture model

@@ -14,17 +14,17 @@ class NBACluster():
         self.num_clusters = num_clusters
         # reduce dimensions if was requested
 
-    def init_data_from_df(self, year, dim_vals, normalize=False, dim_reduce=False, dim_num=3):
-        # normalize is set to false, but you should do it 
+    def init_data_from_df(self, year, dim_vals, normalize=True):
+        # normalize can be set to false, but you should not do it 
         self.year = year
         self.dim_vals = dim_vals
+        self.cols = dim_vals
         self.reduced = False
         self.names, self.x, self.df, self.ordered_dims = clustering.CreateClusterData.create_cluster_data(year, dim_vals, normalize)
         # initializes the data from the dataframe
-
-        # pca dimension reduction
-        if dim_reduce:
-            self.x, self.df, self.ordered_dims = clustering.DimReduce.pca(self.x, dim_num)
+        # pca dimension reduction if there are 4 or more dimensions on which we want to cluster
+        if len(self.dim_vals) > 3:
+            self.x, self.df, self.ordered_dims = clustering.DimReduce.pca(self.x, 3)
             self.dim_vals = self.ordered_dims
             self.reduced = True
         print(f'{self.names.shape[0]} unique points, each with dimension {self.x.shape[-1]}')
@@ -96,7 +96,7 @@ class NBACluster():
                             name = name_obj['full_name']
                             ax.text(p[0],p[1],p[2], name)
         is_dr = '' if not self.reduced else 'with PCA'
-        title = f'{self.method} method with {self.num_clusters} clusters for {self.ordered_dims} for {self.year} season {is_dr}'
+        title = f'{self.method} method with {self.num_clusters} clusters for {self.cols} for {self.year} season {is_dr}'
         plt.title(title)
         plt.savefig(title)
         plt.show()

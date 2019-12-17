@@ -83,23 +83,18 @@ class NBAKMeansSimple(NBACluster):
     def init_centroids(self, k, df, random=True, other_data=None, cols=None):
         centroids = []
         if random:
-            x = df.sample(n=k)
-            tup = ()
-            for m in cols:
-                tup += ([x[m].values],)
-            i = [x['x'].values]
-            j = [x['y'].values]
-            centroids = np.concatenate((i,j)).T
-            values = np.concatenate(([df['x'].values],[df['y'].values])).T
+            values = self.df.values
+            indices = np.random.choice(list(range(len(values))), k, replace=False)
+            centroids = values[indices]
         else:
             # pick the most extreme values
             centroids, values = self.get_extreme_points(k, df, cols)
-            print(values)
         return centroids, values
 
     def k_means(self, k, df, tolerance, random=True, other_data=None, cols=None, get_avg_distance=True):
         feature_num = len(cols)
         centroids, values = self.init_centroids(k, df, random, other_data=other_data, cols=cols)
+        
         
         while True:
             assignments = self.update_points(centroids, values)

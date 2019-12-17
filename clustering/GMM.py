@@ -17,7 +17,6 @@ class NBAGMM(NBACluster):
         a = self.df.values
         indices = np.random.choice(list(range(len(a))), k, replace=False)
         k_points = a[indices]
-        print(k_points)
         return a, k_points
 
     def em_algorithm(self, k, m, a):
