@@ -1,11 +1,10 @@
 # main cluster file
 import numpy as np
 # reads the csv into dataframe before clustering
-import CreateClusterData
-import DimReduce
+import clustering.CreateClusterData
+import clustering.DimReduce
 
 import matplotlib.pyplot as plt
-import matplotlib
 from mpl_toolkits.mplot3d import Axes3D
 
 from nba_api.stats.static import players
@@ -17,26 +16,40 @@ class NBACluster():
 
     def init_data_from_df(self, year, dim_vals, normalize=False, dim_reduce=False, dim_num=3):
         # normalize is set to false, but you should do it 
+        self.year = year
         self.dim_vals = dim_vals
-        self.names, self.x, self.df, self.ordered_dims = CreateClusterData.create_cluster_data(year, dim_vals, normalize)
+        self.reduced = False
+        self.names, self.x, self.df, self.ordered_dims = clustering.CreateClusterData.create_cluster_data(year, dim_vals, normalize)
         # initializes the data from the dataframe
 
         # pca dimension reduction
         if dim_reduce:
-            self.x, self.df, self.ordered_dims = DimReduce.pca(self.x, dim_num)
+            self.x, self.df, self.ordered_dims = clustering.DimReduce.pca(self.x, dim_num)
             self.dim_vals = self.ordered_dims
+            self.reduced = True
         print(f'{self.names.shape[0]} unique points, each with dimension {self.x.shape[-1]}')
 
     def fit(self, eps):
+        '''
+        fit function.
+        '''
         # fit the data
         pass
-    def test(self, test_data):
-        # test the data
-        pass
     def get_labels(self):
+        '''
+        gets the labels from the fitting of the classification.
+        '''
         # return labels from engine.
         return self.labels
     def plot(self, disp_names=False, thresh=0.8):
+        '''
+        plots the cluster points.
+
+        `disp_names`: `bool`: selects whether to display some players' names or not.
+
+        `thresh`: `float`, between `0` and `1`: given each dimensions max value, take `thresh * 100%` of that to show names.
+
+        '''
         self.color_labels = [f'Group {i+1}' for i in range(self.num_clusters)]
         groups = [[] for i in range(self.num_clusters)]
         group_labels = [[] for i in range(self.num_clusters)]
@@ -82,7 +95,8 @@ class NBACluster():
                         if name_obj != None:
                             name = name_obj['full_name']
                             ax.text(p[0],p[1],p[2], name)
+        is_dr = '' if not self.reduced else 'with PCA'
+        title = f'{self.method} method with {self.num_clusters} clusters for {self.ordered_dims} for {self.year} season {is_dr}'
+        plt.title(title)
+        plt.savefig(title)
         plt.show()
-        # works for 1,2, and 3d data
-        
-        # plot the result of everything

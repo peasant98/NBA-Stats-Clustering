@@ -1,10 +1,11 @@
 # gaussian mixture models with em algorithm
 import numpy as np
 from scipy import stats
-from Cluster import NBACluster
+from clustering.Cluster import NBACluster
 
 class NBAGMM(NBACluster):
     def fit(self):
+        self.method = 'GMM'
         a, m = self.get_points(self.num_clusters)
         res = self.em_algorithm(self.num_clusters, m, a)
         probs_given_data = res[2]
@@ -66,12 +67,3 @@ class NBAGMM(NBACluster):
                 p_class_data[i] = np.expand_dims(temp, axis=1)
                 covariances[i] = np.sum(p_class_data[i] * covs, axis=0) / n_class[i]
         return mu, covariances, p_given_data, probs
-nba = NBAGMM(4)
-nba.init_data_from_df('2018-19', ['REB', 'PTS', 'AST'], 
-                        normalize=True)
-nba.fit()
-
-# print(nba.get_labels())
-
-
-nba.plot(True)

@@ -1,11 +1,11 @@
 from sklearn.cluster import KMeans
-from Cluster import NBACluster
+from clustering.Cluster import NBACluster
 import numpy as np
 
 # k-means clustering on n-dimensional data
 class NBAKMeans(NBACluster):
     def fit(self, initialization, max_iter, tolerance):
-
+        self.method = 'KMeans'
         self.engine = KMeans(n_clusters=self.num_clusters, init=initialization,
                                 max_iter=max_iter, tol=tolerance)        
         # fit the data
@@ -18,6 +18,7 @@ class NBAKMeans(NBACluster):
 class NBAKMeansSimple(NBACluster):
 
     def fit(self, rand_initialization, tolerance):
+        self.method = 'KMeans-simple'
         cluster = self.k_means(self.num_clusters, self.df, tolerance, 
                     random=rand_initialization, cols=np.array(self.df.columns.values))
         # print(cluster) 
@@ -54,13 +55,14 @@ class NBAKMeansSimple(NBACluster):
     def update_centroids(self, points, assignments, k, feature_num):
     # generic method for updating centroids based on number of features
         # go through each point, 
+        eps = 1e-5
         cluster_tuples = [[0 for i in range(feature_num+1)] for j in range(k)]
         for ind,val in enumerate(points):
             for i in range(feature_num):
                 cluster_tuples[assignments[ind]][i] += val[i]
             cluster_tuples[assignments[ind]][-1] += 1
         
-        centroids = [[x[i]/x[-1] for i in range(feature_num)] for x in cluster_tuples]
+        centroids = [[x[i]/(x[-1]+eps) for i in range(feature_num)] for x in cluster_tuples]
         return centroids
 
     def update_points(self, centroids, values):
@@ -124,18 +126,3 @@ class NBAKMeansSimple(NBACluster):
 
 # z includes extreme points
 # z1 includes X, dataset
-
-
-# nba = NBAKMeansSimple(5)
-# take care of division by 0 error
-nba = NBAKMeans(5)
-# nba.init_data_from_df('2019-20', ['PTS', 'AST', 'REB', 'STL', 'BLK'])
-nba.init_data_from_df('2019-20', ['FT_PCT', 'FG3_PCT', 'FG_PCT'], normalize=True)
-
-# nba.fit(False, 0.0001)
-nba.fit('k-means++', 300, 0.0001)
-
-# print(nba.get_labels())
-
-
-nba.plot()

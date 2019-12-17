@@ -18,4 +18,4 @@ Right now, you can grab some data from the regular season
 
 - `python3.6 main.py --season=<year>`, where `year` needs to be of the form `20XX-XX+1`; example: `2019-20`.
 
-- This repository only fetches active players (this year), so if you select a previous year, you will only get the subset of players who are still active, and played in that previous year. For example, 2003-04 will barely have any players (LeBron and some others). 
+- This repository now allows you to specify whatever year, and get all of the active players from that year.
