@@ -48,7 +48,7 @@ if __name__ == '__main__':
     # here are the clustering methods
     num_clusters = opt.num_clusters
     year = '2019-20'
-    cols = ['FTA', 'FGA', 'FG3A']
+    cols = ['PTS', 'REB', 'AST', 'TOV']
     normalize = True
     for k in range(3, num_clusters+1):
     ## k means
