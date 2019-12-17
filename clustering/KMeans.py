@@ -5,7 +5,7 @@ import numpy as np
 # k-means clustering on n-dimensional data
 class NBAKMeans(NBACluster):
     def fit(self, initialization, max_iter, tolerance):
-        self.method = 'KMeans'
+        self.method = 'KM'
         self.engine = KMeans(n_clusters=self.num_clusters, init=initialization,
                                 max_iter=max_iter, tol=tolerance)        
         # fit the data
@@ -13,18 +13,24 @@ class NBAKMeans(NBACluster):
         self.labels = cluster.labels_
         self.cluster_centers_ = cluster.cluster_centers_
         print(f'KMeans ran for {cluster.n_iter_} iterations with ssd {cluster.inertia_}')
+        self.ssd = cluster.inertia_
 
 
 class NBAKMeansSimple(NBACluster):
 
     def fit(self, rand_initialization, tolerance):
-        self.method = 'KMeans-simple-random' if rand_initialization else 'KMeans-simple-extreme'
+        self.method = 'KM-Simple-Random' if rand_initialization else 'KM-Simple-Extreme'
         cluster = self.k_means(self.num_clusters, self.df, tolerance, 
                     random=rand_initialization, cols=np.array(self.df.columns.values))
         # print(cluster) 
         self.labels = cluster[0]
         self.centroids = cluster[2]
-        print(f'The mean of the whole cluter is {cluster[1]}')
+        dist = 0
+        a = np.array(self.df.values)
+        for v in range(len(a)):
+            dist += self.dist(a[v], self.centroids[self.labels[v]])
+        self.ssd = dist
+        print(f'The mean of the whole cluster is {cluster[1]}')
 
     def dist(self, x1, x2):
         return np.sqrt(np.sum((x1-x2)**2))
@@ -113,11 +119,3 @@ class NBAKMeansSimple(NBACluster):
             mean = d / len(values)
         # return the assigned points' clusters, mean, and the actual centroids.
         return assignments, mean, centroids
-
-    # 1) Initialize k-means by randomly selecting `k' of your data points
-    # 2) Run k-means until convergence
-    # 3) Save the final cluster for each point
-
-
-# z includes extreme points
-# z1 includes X, dataset

@@ -3,6 +3,8 @@ import numpy as np
 from scipy import stats
 from clustering.Cluster import NBACluster
 
+
+
 class NBAGMM(NBACluster):
     def fit(self):
         self.method = 'GMM'
@@ -10,14 +12,22 @@ class NBAGMM(NBACluster):
         res = self.em_algorithm(self.num_clusters, m, a)
         probs_given_data = res[2]
         l = []
+        dist = 0
         for v in range(len(a)):
-            l.append(np.argmax(probs_given_data[:,v]))
+            selection = np.argmax(probs_given_data[:,v])
+            dist += self.dist(a[v], res[0][selection])
+            l.append(selection)
+        self.ssd = dist
         self.labels = l
+
     def get_points(self, k):
         a = self.df.values
         indices = np.random.choice(list(range(len(a))), k, replace=False)
         k_points = a[indices]
         return a, k_points
+
+    def dist(self, x1, x2):
+        return np.sqrt(np.sum((x1-x2)**2))
 
     def em_algorithm(self, k, m, a):
         # pick k random points
