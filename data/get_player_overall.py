@@ -19,7 +19,7 @@ def by_season(year,debug=False, games_thresh=0):
                                                     season=year)
     data = p.league_dash_player_stats.data['data']
     columns = np.array(['PlayerID', 'GP','PTS','AST','REB','STL','BLK','TOV',
-                'FT_PCT', 'FG_PCT', 'FG3_PCT', 'FTA', 'FGA', 'FG3A', 'MIN', 'PLUS_MINUS'])
+                'FT_PCT', 'FG_PCT', 'FG3_PCT', 'FTA', 'FGA', 'FG3M', 'MIN', 'PLUS_MINUS'])
     r = len(data)
     c = len(columns)
     players_arr = np.zeros((r,c))
@@ -27,6 +27,11 @@ def by_season(year,debug=False, games_thresh=0):
         # valid season.
         num = np.array([0,5,29,22,21,24,25,23,18,12,15,17,11,14,9,30])
         for i,player in enumerate(data):
+            try:
+                name = players.find_player_by_id(player[0])['full_name']
+                print(f'{name} found.')
+            except:
+                print('Player name not found')
             for j,n in enumerate(num):
                 players_arr[i,j] = player[n]
     df = pd.DataFrame(players_arr, columns=columns)
@@ -39,62 +44,3 @@ def by_season(year,debug=False, games_thresh=0):
     df_filtered.to_csv(f'data/{year}_nba_players.csv')
     return df_filtered
 # get data for specific season from every player out of active players today who was active.
-def get_id_from_players_list(entry):
-    return entry['id']
-
-def place_player(ind, player_id, year, arr, m, n):
-    player_year = playerdashboardbyyearoveryear.PlayerDashboardByYearOverYear(player_id=player_id,
-                                            season=year)
-    with arr.get_lock():
-        name = players.find_player_by_id(player_id)['full_name']
-        print(f'{name} found.')
-        np_arr = np.frombuffer(arr.get_obj()) # mp_arr and arr share the same memory
-        # make it two-dimensional
-        b = np_arr.reshape((m,n))
-        if player_year.overall_player_dashboard.data['data'] != []:
-            player_season = player_year.overall_player_dashboard.data['data'][0]
-            # season is available from active player
-            # games played
-            b[ind, 0] = player_id
-            num = np.array([5,29,22,21,24,25,23,18,12,15,17])
-            # gp, pts, ast, reb, stl, blk, tov, ft_pct, fg_pct, fg3_pct, fta
-            for i,val in enumerate(num):
-                b[ind, i+1] = player_season[val]
-
-def get_season_data(year, debug=True):
-    n = N_VAL
-    all_players = players.get_active_players()
-    # ids of all active players
-    ids = np.array(list(map(get_id_from_players_list, all_players)))
-    m = len(ids)
-    jobs = []
-    v = int(m / 15) + 1
-    split_ids = np.array_split(ids, v)
-    arr = Array('d', m*n)
-    np_arr = np.frombuffer(arr.get_obj())
-    ind = 0
-    for split in split_ids:
-        jobs = []
-        for player_id in split:
-            # get important stats from each year
-            p = Process(target=place_player, args=(ind, player_id, year, arr, m, n))
-            jobs.append(p)
-            p.start()
-            ind+=1
-        for j in jobs:
-            j.join()
-    b = np_arr.reshape((m,n))
-    # from m x n matrix b, construct dataframe
-    # m rows - each person
-    columns = np.array(['PlayerID','GP','PTS','AST','REB','STL','BLK','TOV',
-                'FT_PCT', 'FG_PCT', 'FG3_PCT', 'FTA'])
-    # gp, pts, ast, reb, stl, blk, tov, ft_pct, fg_pct, fg3_pct, fta
-    df = pd.DataFrame(b, columns=columns)
-    to_int = ['PlayerID', 'GP', 'PTS', 'AST', 'REB', 'STL', 'BLK', 'TOV']
-    df[to_int] = df[to_int].astype(int)
-    df_filtered = df[df['GP'] > 0] 
-    if debug:
-        print(df_filtered)
-    # also export to csv
-    df_filtered.to_csv(f'data/{year}_nba_players.csv')
-    return df_filtered
