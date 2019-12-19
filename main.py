@@ -37,6 +37,7 @@ if __name__ == '__main__':
     num_clusters = max(opt.num_clusters,3)
     # default year
     year = '2019-20'
+    interactive_plot = False
     # default columns, select from strings:
     #'PlayerID', 'GP','PTS','AST','REB','STL','BLK','TOV', 'FT_PCT', 
     # 'FG_PCT', 'FG3_PCT', 'FTA', 'FGA', 'FG3A', 'MIN', 'PLUS_MINUS'
@@ -74,7 +75,7 @@ if __name__ == '__main__':
 
         # plot the player. Can plot single name as well
         # if disp_names is True, display players with high values on one or many of the axes
-        nba.plot(single_name='LeBron James', disp_names=plot_names)
+        nba.plot(single_name='LeBron James', disp_names=plot_names, interactive=interactive_plot)
         # ## k means simple
         
         nba1 = nba_kmeans.NBAKMeansSimple(k)
@@ -84,7 +85,7 @@ if __name__ == '__main__':
         # true for random initialization or points for cluster centers.
         nba1.fit(True, 0.0001)
         km_simple_random_elbows.append(nba1.ssd)
-        nba1.plot(single_name='LeBron James', disp_names=plot_names)
+        nba1.plot(single_name='LeBron James', disp_names=plot_names, interactive=interactive_plot)
 
         nba2 = nba_kmeans.NBAKMeansSimple(k)
         nba2.init_data_from_df(year, cols, normalize=normalize)
@@ -95,7 +96,7 @@ if __name__ == '__main__':
         km_simple_extreme_elbows.append(nba2.ssd)
 
         # plot funcion!
-        nba2.plot(single_name='LeBron James', disp_names=plot_names)
+        nba2.plot(single_name='LeBron James', disp_names=plot_names, interactive=interactive_plot)
         
         # # ## gaussian mixture model
 
@@ -109,7 +110,7 @@ if __name__ == '__main__':
         # fit given 100 iterations
         gmm_elbows.append(nba3.ssd)
         # # # print(nba.get_labels())
-        nba3.plot(single_name='LeBron James', disp_names=plot_names)
+        nba3.plot(single_name='LeBron James', disp_names=plot_names, interactive=interactive_plot)
         
 
         # ## hierarchical
@@ -120,7 +121,7 @@ if __name__ == '__main__':
         # fit with euc. and ward linkage
         nba4.fit('euclidean')
         hierarchical_elbows.append(nba4.ssd)
-        nba4.plot(single_name='LeBron James', disp_names=plot_names)
+        nba4.plot(single_name='LeBron James', disp_names=plot_names, interactive=interactive_plot)
     # plot k vs sum of squared distances from the center 
     all_elbows = [km_elbows, km_simple_random_elbows, km_simple_extreme_elbows, gmm_elbows, hierarchical_elbows]
     elbow_strings = ['KM', 'KM-Simple-Random', 'KM-Simple-Extreme', 'GMM', 'Hierarchical']
