@@ -1,6 +1,6 @@
 from multiprocessing import Process, Value, Array, Lock
 import numpy as np
-# messa
+# not used in the final code, but some multiprocessing practice in python.
 x = [1]
 def f(a, lock):
     lock.acquire()
@@ -18,5 +18,3 @@ if __name__ == '__main__':
         p.start()
     for i in range(11):
         jobs[i].join()
-
-    print(arr[:])

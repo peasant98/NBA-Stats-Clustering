@@ -1,3 +1,6 @@
+# NBA Stats Clustering
+# Copyright Matthew Strong, 2019
+
 # main cluster file
 import numpy as np
 # reads the csv into dataframe before clustering
@@ -12,7 +15,7 @@ from nba_api.stats.static import players
 class NBACluster():
     def __init__(self, num_clusters):
         self.num_clusters = num_clusters
-        # reduce dimensions if was requested
+        # get number of clusters, this is called in all other child classes
 
     def init_data_from_df(self, year, dim_vals, normalize=True):
         # normalize can be set to false, but you should not do it 
@@ -20,12 +23,16 @@ class NBACluster():
         self.dim_vals = dim_vals
         self.cols = dim_vals
         self.reduced = False
+        # create clustered data and get ids, numpy matrix for clustering,
+        # dataframe, and dimensions to display in plot function
         self.names, self.x, self.df, self.ordered_dims = clustering.CreateClusterData.create_cluster_data(year, dim_vals, normalize)
         # initializes the data from the dataframe
         # pca dimension reduction if there are 4 or more dimensions on which we want to cluster
         if len(self.dim_vals) > 3:
+            # perform pca if many dimensions to get 3-d visualization
             self.x, self.df, self.ordered_dims = clustering.DimReduce.pca(self.x, 3)
             self.dim_vals = self.ordered_dims
+            # it is reduced!
             self.reduced = True
         print(f'{self.names.shape[0]} unique points, each with dimension {self.x.shape[-1]}')
 
@@ -34,11 +41,13 @@ class NBACluster():
         fit function.
         '''
         # fit the data
+        # is officially implemented in the other classes that inherit from this one.
         pass
     def get_labels(self):
         '''
         gets the labels from the fitting of the classification.
         '''
+        # show labels
         # return labels from engine.
         return self.labels
     def text_display_cluster(self):
@@ -74,7 +83,7 @@ class NBACluster():
             if len(index) == 1:
                 # player does in fact exist
                 self.priority_name_index = index[0][0]
-
+        # groups
         self.color_labels = [f'Group {i+1}' for i in range(self.num_clusters)]
         groups = [[] for i in range(self.num_clusters)]
         group_labels = [[] for i in range(self.num_clusters)]
@@ -85,6 +94,7 @@ class NBACluster():
         if len(self.dim_vals) == 1:
             pass
         elif len(self.dim_vals) == 2:
+            # 2-d visualization
             fig, ax = plt.subplots()
             # for i,group in enumerate(groups):
                 # g = np.array(group)
@@ -95,7 +105,7 @@ class NBACluster():
             ax.set_ylabel(self.ordered_dims[1])
             dim1_thresh = np.max(self.x[::,0]) * thresh
             dim2_thresh = np.max(self.x[::,1]) * thresh
-
+            # if we want to display themes, find players with high values, and show the name on the plot
             if disp_names:
                 for i,p in enumerate(self.x):
                     if p[0] > dim1_thresh or p[1] > dim2_thresh:
@@ -103,6 +113,8 @@ class NBACluster():
                         if name_obj != None:
                             name = name_obj['full_name']
                             ax.text(p[0],p[1], name)
+            # look for player with priority name index, which is when a user wants a player's name to be
+            # shown in the graph itself
             for i,p in enumerate(self.x):
                 if i==self.priority_name_index:
                     name_obj = players.find_player_by_id(self.names[i])
@@ -110,6 +122,8 @@ class NBACluster():
                         name = name_obj['full_name']
                         ax.text(p[0],p[1], name)
         elif len(self.dim_vals) == 3:
+            # 3d visualization
+            # kudos to matplotlib with good example of showing how this works
             fig = plt.figure()
             ax = Axes3D(fig)
             ax.scatter(xs=self.x[::,0], ys=self.x[::,1], zs=self.x[::,2], c=self.labels)
@@ -119,6 +133,7 @@ class NBACluster():
             dim1_thresh = np.max(self.x[::,0]) * thresh
             dim2_thresh = np.max(self.x[::,1]) * thresh
             dim3_thresh = np.max(self.x[::,2]) * thresh
+            # similar to 2d plot, display names that are high on one or more axes
 
             if disp_names:
                 for i,p in enumerate(self.x):
@@ -127,18 +142,26 @@ class NBACluster():
                         if name_obj != None:
                             name = name_obj['full_name']
                             ax.text(p[0],p[1],p[2], name)
-
+            # display name if important
             for i,p in enumerate(self.x):
                 if i==self.priority_name_index:
                     name_obj = players.find_player_by_id(self.names[i])
                     if name_obj != None:
                         name = name_obj['full_name']
                         ax.text(p[0],p[1],p[2], name)
+        # save all of the graphs to a png file
+        # if pca was performed
+        # method type
+        # year
+        # k value
+        # along with fields/dimensions clustering was performed.
         is_dr = '' if not self.reduced else '-with-PCA'
         rounded_ssd = np.round(self.ssd, 4)
         title = f'{self.method}-k={self.num_clusters}-{self.cols}-{self.year}{is_dr}'
         plt.title(f'{title}-ssd={rounded_ssd}')
         plt.savefig(f'img/{title}')
+        # also can be toggled in 3-d, fun stuff
         if interactive:
             plt.show()
+        # close plot.
         plt.close()
