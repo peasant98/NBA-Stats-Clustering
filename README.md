@@ -1,8 +1,18 @@
 # NBA Stats Clustering
 
-A repo with various tools and tricks for clustering of NBA Players. Currently is implemented for active NBA players only.
+A repo with various tools and tricks for clustering of NBA Players. 
 
-Right now, you can grab some data from the regular season
+Includes:
+
+- Gaussian Mixture Models
+
+- K-Means Clustering
+
+- Hierarchical Agglomerative Clustering
+
+- PCA
+
+- Yearly Stats
 
 ## Requires
 
