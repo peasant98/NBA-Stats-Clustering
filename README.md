@@ -26,7 +26,7 @@ Includes:
 8. `sklearn`
 
 
-Also, needs Python3.6 or above due to f-strings.
+Also, needs Python3.6 or above due to `f`-strings.
 
 ## Usage
 
@@ -41,3 +41,5 @@ k-means (3 different initialization methods), gmm, and hierarchical clustering
 - `python3.6 main.py --season=<year>`, where `year` needs to be of the form `20XX-XX+1`; example: `2019-20`.
 
 - This repository now allows you to specify whatever year, and get all of the active players from that year.
+
+- Additionally, the `img/` folder shows a bunch of pictures of clustering results among different fields. clustering methods, and values of `k`.
