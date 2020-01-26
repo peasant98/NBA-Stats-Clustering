@@ -10,7 +10,7 @@ from nba_api.stats.endpoints import leaguedashplayerstats
 from nba_api.stats.static import players
 
 
-def by_season(year,debug=False, games_thresh=0):
+def by_season(year,debug=False, games_thresh=0, headers=None):
     '''
     given a year, gets all players in a dataframe
 
@@ -23,8 +23,9 @@ def by_season(year,debug=False, games_thresh=0):
     `games_thresh`: int: take out players who player <= `games_thresh` games
     '''
     # given the year, gets all of the players in 1 call
+    
     p = leaguedashplayerstats.LeagueDashPlayerStats(per_mode_detailed='PerGame',
-                                                    season=year)
+                                                    season='2019-20', headers=headers)
     data = p.league_dash_player_stats.data['data']
     # all the columns we want for clustering
     columns = np.array(['PlayerID', 'GP','PTS','AST','REB','STL','BLK','TOV',

@@ -13,11 +13,13 @@ from nba_api.stats.library.parameters import Season
 import data.get_player_overall as get_players
 
 # importing my custom clustering methods.
+import constants
 import clustering.GMM as nba_gmm
 import clustering.Hierarchical as nba_hierarchical
 import clustering.KMeans as nba_kmeans
 
 import matplotlib.pyplot as plt
+
 
 # 3 total different clustering methods that I initially used
 # pts,ast,reb  reb,stl,blk  fta,fga,fg3a
@@ -26,23 +28,24 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--season', type=str, default='none', help='season year')
     parser.add_argument('--num_clusters', type=int, default=3, help='num clusters max')
-    
+    parser.add_argument('--interactive', type=bool, default=False, help='whether plots are shown or not')
     opt = parser.parse_args()
     # get clustering and dimension methods from cmd line
     # the season is selected, make api call to get players' stats from that seasons
     if opt.season != 'none':
-        df = get_players.by_season(opt.season)
+        df = get_players.by_season(opt.season, headers=constants.HEADERS)
 
     # if the user decides to do less than 3 clusters for whatever reason
     num_clusters = max(opt.num_clusters,3)
     # default year
     year = '2019-20'
-    interactive_plot = False
+    interactive_plot = opt.interactive
+
     # default columns, select from strings:
     #'PlayerID', 'GP','PTS','AST','REB','STL','BLK','TOV', 'FT_PCT', 
     # 'FG_PCT', 'FG3_PCT', 'FTA', 'FGA', 'FG3A', 'MIN', 'PLUS_MINUS'
     # select any combination of them
-    cols = ['PTS', 'AST', 'REB']
+    cols = ['PTS', 'AST', 'REB', 'BLK']
     # if we want to normalize the data for each method
     normalize = True
     # if names of players should be plotted that are on the higher end of the results
