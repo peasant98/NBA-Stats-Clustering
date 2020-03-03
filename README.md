@@ -26,7 +26,7 @@ Includes:
 8. `sklearn`
 
 
-Also, needs Python3.6 or above due to `f`-strings.
+Also, needs Python3.6 or above due to f-strings.
 
 ## Usage
 
